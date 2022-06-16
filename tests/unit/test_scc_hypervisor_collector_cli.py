@@ -113,3 +113,10 @@ class TestSCCHypervisorCollectorCLI:
         with pytest.raises(SystemExit):
             scc_hypervisor_collector_cli.main()
         assert "No backends specified in config!" in caplog.text
+
+    def test_scc_credentials_check_option(self, capsys, monkeypatch, scc_hypervisor_collector_cli):
+        monkeypatch.setattr("sys.argv", ["scc-hypervisor-collector", "--scc-credentials-check",  "--config", "tests/unit/data/config/mock/config.yaml"])
+        with pytest.raises(SystemExit):
+            scc_hypervisor_collector_cli.main()
+        out, err = capsys.readouterr()
+        assert "SCC Credentials Check Verification Failed\n" in out

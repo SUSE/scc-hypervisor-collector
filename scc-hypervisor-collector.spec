@@ -35,7 +35,9 @@ URL:            https://github.com/SUSE/scc-hypervisor-collector
 Source0:        scc-hypervisor-collector-%{version}.tar.xz
 Source1:        scc-hypervisor-collector.service
 Source2:        scc-hypervisor-collector.timer
+BuildRequires:  %{python_module importlib-metadata}
 BuildRequires:  %{python_module PyYAML}
+BuildRequires:  %{python_module requests}
 BuildRequires:  %{python_module devel}
 BuildRequires:  %{python_module mock}
 BuildRequires:  %{python_module pytest}
@@ -59,7 +61,9 @@ run the scc-hypervisor-collector on a regular basis.
 %package common
 Summary:        Tool to collect and upload hypervisor details to SUSE Customer Care
 Group:          System/Management
+Requires:       %{python_module importlib-metadata}
 Requires:       %{python_module PyYAML}
+Requires:       %{python_module requests}
 Requires:       openssh-clients
 Requires:       virtual-host-gatherer-Libvirt
 Requires:       virtual-host-gatherer-VMware

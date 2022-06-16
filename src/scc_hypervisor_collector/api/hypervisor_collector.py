@@ -129,9 +129,9 @@ class HypervisorCollector:
                             "%d attempts", repr(self.backend.id),
                             repr(self.backend.module), attempt)
         if self.succeeded:
-            self._log.debug("Backend %s, module %s, query succeeded after "
-                            "%d attempts", repr(self.backend.id),
-                            repr(self.backend.module), attempt)
+            self._log.info("Backend %s, module %s, query succeeded after "
+                           "%d attempts", repr(self.backend.id),
+                           repr(self.backend.module), attempt)
 
         return results
 
@@ -159,29 +159,29 @@ class HypervisorCollector:
         """Details about the hypervisor and it's VMs."""
         if self._details is None:
             self._details = {
-                h: {
-                    'name': i['name'],
-                    'id': i['hostIdentifier'],
-                    'capabilities': {
-                        'cpu_topology': {
-                            'arch': i['cpuArch'],
-                            # cast these values as integers with int()
-                            # to avoid issues seem when trying to
-                            # yaml.safe_dump() them for VMware backends.
-                            'sockets': int(i['totalCpuSockets']),
-                            'cores': int(i['totalCpuCores']),
-                            'threads': int(i['totalCpuThreads']),
-                        },
-                        'ram_mb': i.get('ramMb'),
-                        'type': i['type'],
+                "virtual_hosts": [{
+                    "uuid": i['hostIdentifier'],
+                    "properties": {
+                        "name": i['name'],
+                        "arch": i['cpuArch'],
+                        # cast these values as integers with int()
+                        # to avoid issues seem when trying to
+                        # yaml.safe_dump() them for VMware backends.
+                        "sockets": int(i['totalCpuSockets']),
+                        "cores": int(i['totalCpuCores']),
+                        "threads": int(i['totalCpuThreads']),
+                        "ram_mb": i.get('ramMb'),
+                        "type": i['type'],
+                        "group": self.backend.id
                     },
-                    'vms': {
-                        v: dict(tuple(dict(uuid=u).items()) +
-                                tuple(i['optionalVmData'][v].items()))
-                        for v, u in i['vms'].items()
-                    },
-                }
-                for h, i in self.results.items()
+                    "systems": [{
+                        "uuid": u,
+                        "properties": {
+                            "vm_name": v,
+                            "data": dict(tuple(i['optionalVmData'][v].items()))
+                        }
+                    } for v, u in i['vms'].items()],
+                } for h, i in self.results.items()]
             }
 
         return cast(Dict, self._details)
