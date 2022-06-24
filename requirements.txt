@@ -1,5 +1,7 @@
 # scc-hypervisor-collector direct dependencies
+importlib-metadata
 pyyaml
+requests
 
 # virtual-host-gatherer dependencies
 libvirt-python

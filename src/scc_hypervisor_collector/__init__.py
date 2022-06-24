@@ -14,7 +14,7 @@ the SUSE Customer Center.
 See 'ConfigManager' for details on configuration data setup.
 """
 
-from .api import (ConfigManager, CollectionScheduler)
+from .api import (ConfigManager, CollectionScheduler, SCCUploader)
 
 
 __author = 'Fergal Mc Carthy <fmccarthy@suse.com>'
@@ -23,4 +23,5 @@ __version__ = '0.0.2'
 __all__ = [
     'ConfigManager',
     'CollectionScheduler',
+    'SCCUploader'
 ]

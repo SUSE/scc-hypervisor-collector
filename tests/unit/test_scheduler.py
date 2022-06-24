@@ -40,11 +40,11 @@ class TestScheduler:
             for each in scheduler.hypervisors:
                 utils.validate_mock_data(each, each.backend.id)
                 if each.backend.id == 'libvirt1':
-                    assert 'sle15-dev' in each.details
+                    assert 'sle15-dev' in str(each.details)
                     assert 'sle15-dev' in each.hosts
                     assert 'sle15-dev' in each.results
                 if each.backend.id == 'vcenter1':
-                    assert 'esx1.test.net' in each.details
-                    assert 'esx2.test.net' in each.details
+                    assert 'esx1.test.net' in str(each.details)
+                    assert 'esx2.test.net' in str(each.details)
                     assert 'esx1.test.net' in each.hosts
                     assert 'esx1.test.net' in each.results

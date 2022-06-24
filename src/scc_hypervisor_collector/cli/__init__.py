@@ -6,12 +6,14 @@ import logging
 import os
 import sys
 import traceback
-from logging.handlers import RotatingFileHandler
+import json
 from typing import (Any, Optional, Sequence)
-import yaml
+from logging.handlers import RotatingFileHandler
 
 from scc_hypervisor_collector import __version__ as cli_version
-from scc_hypervisor_collector import (ConfigManager, CollectionScheduler)
+from scc_hypervisor_collector import (
+    ConfigManager, CollectionScheduler, SCCUploader
+)
 from scc_hypervisor_collector.api import (
     CollectorException
 )
@@ -69,6 +71,21 @@ def printlog(log_level: int, error: Exception, logger: logging.Logger) -> None:
             logger.error("ERROR:", exc_info=True)
 
 
+def check_scc_credentials(scc_credentials_check: bool,
+                          cfg_mgr: ConfigManager) -> None:
+    """
+    Validate the SCC credentials supplied when
+    --scc-credentials-check is set
+    """
+    if scc_credentials_check:
+        uploader = SCCUploader(cfg_mgr.config_data.credentials.scc)
+        if uploader.check_creds():
+            print("SCC Credentials Check Verification Successful")
+        else:
+            print("SCC Credentials Check Verification Failed")
+        sys.exit(0)
+
+
 def main(argv: Optional[Sequence[str]] = None) -> None:
     """Implements CLI for the scc-hypervisor-gatherer."""
     parser = argparse.ArgumentParser(
@@ -97,12 +114,17 @@ def main(argv: Optional[Sequence[str]] = None) -> None:
     parser.add_argument('-C', '--check', action='store_true',
                         help="Check the configuration data "
                              "only, reporting any errors.")
+    parser.add_argument('-S', '--scc-credentials-check', action='store_true',
+                        help="Validate the SCC credentials supplied")
     default_log_destination = f"{os.path.expanduser('~')}/" \
                               f"scc-hypervisor-collector.log"
     parser.add_argument('-L', '--logfile', action='store',
                         default=default_log_destination,
                         help="path to logfile. "
                              f"Default: {default_log_destination}")
+    parser.add_argument('-u', '--upload', action='store_true',
+                        default=False, help="Upload the data collected to SCC")
+    # TODO(mbelur): change default to True for upload option
 
     args = parser.parse_args(argv)
 
@@ -136,6 +158,8 @@ def main(argv: Optional[Sequence[str]] = None) -> None:
             print(error)
         sys.exit(0)
 
+    check_scc_credentials(args.scc_credentials_check, cfg_mgr)
+
     try:
         scheduler = CollectionScheduler(cfg_mgr.config_data)
         logger.debug("Scheduler: scheduler = %s", repr(scheduler))
@@ -144,11 +168,14 @@ def main(argv: Optional[Sequence[str]] = None) -> None:
         printlog(log_level, e, logger)
         sys.exit(1)
 
-    # TODO(rtamalin): Make reporting the results like this optional
-    # once the SccUploader is implemented.
-    for hv in scheduler.hypervisors:
-        print(f"[{hv.backend.id}]")
-        print(yaml.safe_dump(hv.details))
+    if args.upload:
+        uploader = SCCUploader(cfg_mgr.config_data.credentials.scc)
+        for hv in scheduler.hypervisors:
+            uploader.upload(hv.details)
+    else:
+        # TODO(mbelur): Write the contents to a file
+        for hv in scheduler.hypervisors:
+            print(json.dumps(hv.details))
 
 
 __all__ = ['main']
