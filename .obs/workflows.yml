@@ -1,0 +1,10 @@
+workflow:
+  steps:
+    - trigger_services:
+        project: home:mbelur:branches:home:fmccarthy:systemsmanagement
+        package: scc-hypervisor-collector
+  filters:
+    branches:
+      only:
+        - main
+    event: push
