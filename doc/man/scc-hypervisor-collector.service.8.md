@@ -8,10 +8,12 @@ date: June 2022
 
 **scc-hypervisor-collector.service**, **scc-hypervisor-collector.timer** - **systemd(1)** integration for **scc-hypervisor-collector(1)**
 
+
 # SYNOPSIS
 
 scc-hypervisor-collector.service  
 scc-hypervisor-collector.timer
+
 
 # DESCRIPTION
 
@@ -24,11 +26,13 @@ The **scc-hypervisor-collector.timer** **systemd(1)** unit, once
 enabled, will trigger the **scc-hypervisor-collector.service** on
 a daily basis, randomly skewed by up to 15 minutes.
 
+
 # RESTRICTED SERVICE ACCOUNT
 
 Installation of the **scc-hypervisor-collector** package automatically
 creates the **scchvc** user as a restricted service account, if it
 doesn't already exist, with a home directory of **/var/lib/scchvc**.
+
 
 # CONFIGURATION
 
@@ -59,7 +63,9 @@ See **ssh-keygen(1)** for more details on how to generate appropriate
 SSH keys if needed, and **ssh(1)** for the appropriate permissions
 for the **/var/lib/scchvc/.ssh/** directory and any keys stored there.
 
+
 # CUSTOMIZATION
+
 The **systemctl edit** mechanism can be used to customize either of
 the **scc-hypervisor-collector.service** and **scc-hypervisor-collector.timer**
 units.
@@ -89,6 +95,7 @@ OnCalendar=weekly
 RandomizedDelaySec=6h
 ```
 
+
 # FILES AND DIRECTORIES
 
 **/var/lib/scchvc/.config/scc-hypervisor-collector/**
@@ -105,10 +112,12 @@ RandomizedDelaySec=6h
 : Directory holding any SSH keys (**ssh-keygen**) needed to access
   **Libvirt** with **qemu+ssh** URIs.
 
+
 # AUTHORS
 
 Originally developed by Fergal Mc Carthy (fmccarthy@suse.com) and Meera
 Belur (mbelur@suse.com) for the SCC at SUSE LLC (scc-feedback@suse.de)
+
 
 # LINKS
 
@@ -117,6 +126,7 @@ SUSE Customer Center: https://scc.suse.com
 scc-hypervisor-collector on GitHub: https://github.com/SUSE/scc-hypervisor-collector
 
 virtual-host-gatherer on GitHub: https://github.com/uyuni-project/virtual-host-gatherer
+
 
 # SEE ALSO
 

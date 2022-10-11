@@ -58,3 +58,47 @@ accounts that can only be used to retrieve the relevant details.
 
 This will help further mitigate any risks that may be associated
 with inadvertently exposed credentials.
+
+## Output details files
+
+When using the **--output** option, the following actions will be
+taken for the specified file:
+
+* it will be created if it doesn't already exist.
+* any existing content will be overwritten.
+* it's permissions will be updated to restrict access to the
+  current user.
+
+## Input details files
+
+When using the **--input** option, the specified file is treated
+like a configuration file, with the following restrictions:
+
+* input files must be owned by, and accessible only to, the user
+  running the tool.
+
+Additionally, when using the **--input** option, the requirement
+to specify backends in the configuration settings is relaxed.
+
+## Collect details on one system, upload on another
+
+Collecting the hypervisor details and uploading them to the SCC
+in a single command run may not always be possible. For example,
+in some customer environments, systems with the necessary access
+to collect hypervisor details may not have the internet access
+required to upload the collected details to the SCC.
+
+The **--input** and **--output** options are intended to support
+such deployment models, as follows:
+
+* on an internal system, with access to the hypervisors, the
+  **scc-hypervisor-collector** can be run using the **--output**
+  option to create a hypervisor details file.
+
+* the hypervisor details file can be copied to a system with
+  internet access, which just needs the SCC credentials to be
+  configured, where the **scc-hypervisor-collector** can be
+  run, using the **input** option to specify the hypervisor
+  details file, to upload the hypervisor details to the SCC.
+
+

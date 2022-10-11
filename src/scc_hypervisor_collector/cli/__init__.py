@@ -139,20 +139,19 @@ def create_options_parser() -> argparse.ArgumentParser:
                         help="Check the configuration data "
                              "only, reporting any errors.")
     parser.add_argument('-S', '--scc-credentials-check', action='store_true',
-                        help="Validate the SCC credentials supplied")
+                        help="Validate the supplied SCC credentials")
     default_log_destination = f"{os.path.expanduser('~')}/" \
                               f"scc-hypervisor-collector.log"
-    parser.add_argument('-L', '--logfile', action='store',
-                        type=Path,
+    parser.add_argument('-L', '--logfile', action='store', type=Path,
                         default=Path(default_log_destination),
                         help="path to logfile. "
                              f"Default: {default_log_destination}")
     parser.add_argument('-u', '--upload', action='store_true',
                         default=False, help="Upload the data collected to SCC")
-    parser.add_argument('-r', '--retry_on_rate_limit', action='store_true',
-                        default=False, help="Retry uploading the data "
-                                            "collected to SCC when rate limit "
-                                            "is hit")
+    parser.add_argument('-r', '--retry-on-rate-limit', '--retry_on_rate_limit',
+                        action='store_true', default=False,
+                        help="Retry uploading the collected data to "
+                             "SCC if rate limit is encountered")
     io_group = parser.add_mutually_exclusive_group()
     io_group.add_argument('-i', '--input', type=Path, action='store',
                           help="File from which previously saved collection "

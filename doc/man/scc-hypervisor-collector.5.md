@@ -9,12 +9,14 @@ date: June 2022
 **scc-hypervisor-collector** - SUSE Customer Center hypervisor
 collector configuration files.
 
+
 # DESCRIPTION
 
 The **scc-hypervisor-collector(1)** tool depends upon configuration
 settings that specify the hypervisors that it needs to query and the
 credientials that it will use to upload the collected details to the
 SUSE Customer Center.
+
 
 # CONFIGURATION FILES
 
@@ -31,11 +33,13 @@ file. If both options are specified then the specified config file
 contents will be merged over any settings loaded from the specfied
 configuration directory.
 
+
 # ACCESS AND OWNERSHIP
 
 For security reasons only the non-root user that is running the
 **scc-hypervisor-collector** command should be able to access the
 specified configuration files.
+
 
 # CONFIGURATION OVERVIEW
 
@@ -47,7 +51,7 @@ contain the following top level entries:
 
 **backends**
   : A list of hypervisors that should be queried to obtain the relevant
-    details.
+    details. NOTE: Not required with **--input** is specified.
 
 ## CREDENTIALS
 
@@ -136,6 +140,7 @@ hypervisor nodes:
   be running. See the Virtualization Guide for your SUSE Linux
   Enterprise Server release for more details.
 
+
 # EXAMPLE CONFIGURATION
 
 ```
@@ -159,10 +164,12 @@ backends:
     uri: 'qemu+ssh://someuser@kvmhost1.example.com/system'
 ```
 
+
 # AUTHORS
 
 Originally developed by Fergal Mc Carthy (fmccarthy@suse.com) and
 Meera Belur (mbelur@suse.com) for the SCC at SUSE LLC (scc-feedback@suse.de)
+
 
 # LINKS
 
@@ -173,6 +180,7 @@ scc-hypervisor-collector on GitHub: https://github.com/SUSE/scc-hypervisor-colle
 virtual-host-gatherer on GitHub: https://github.com/uyuni-project/virtual-host-gatherer
 
 YAML Specification: https://yaml.org/
+
 
 # SEE ALSO
 

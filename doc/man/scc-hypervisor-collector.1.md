@@ -8,9 +8,11 @@ date: June 2022
 **scc-hypervisor-collector** - Collect & Upload Hypervisor details
 to SUSE Customer Center
 
+
 # SYNOPSIS
 
 **scc-hypervisor-collector [<optional>...]**
+
 
 # DESCRIPTION
 
@@ -18,6 +20,7 @@ The **scc-hypervisor-collector(1)** collects details relevant to
 subscription compliance tracking from customer hypervisor solutions
 and uploads them to the SUSE Customer Center (SCC), using provided
 customer credentials.
+
 
 # COLLECTED DETAILS
 
@@ -72,93 +75,117 @@ The following examples are YAML representations of the details that
 are collected from a QEMU/KVM Libvirt host and a VMWare vCenter:
 
 ```
-[libvirt1]
-kvmhost1.example.com:
-  capabilities:
-    cpu_topology:
-      arch: x86_64
-      cores: 8
-      sockets: 2
-      threads: 1
-    ram_mb: 128781
-    type: QEMU
-  id: af78bfa8-67df-4d84-8d32-e40eb2404ac1
-  name: sle15-dev
-  vms:
-    some-workload-vm-1:
-      uuid: c44bae94-bab0-44f5-8603-0d770344facc
-      vmState: running
-    some-workload-vm-2:
-      uuid: f5319c28-377f-46fe-acee-5509a356f652
-      vmState: running
-    some-workload-vm-3:
-      uuid: 51b62ad3-effd-45db-b508-1ac47a528b93
-      vmState: running
-    some-workload-vm-4:
-      uuid: cf46f104-5806-4ddd-9e99-32d167d063a3
-      vmState: running
+- backend: libvirt0
+  details:
+    virtualization_hosts:
+    - group_name: libvirt0
+      identifier: 0dc1c04b-8b98-409c-9f73-45834fca4c73
+      properties:
+        arch: x86_64
+        cores: 12
+        name: libvirt0.example.com
+        ram_mb: 262108
+        sockets: 2
+        threads: 24
+        type: QEMU
+      systems:
+      - properties:
+          vmState: x86_64
+          vm_name: vm_libvirt0_0
+        uuid: 17ada641-0840-4dec-8b7f-836f36639cef
+      - properties:
+          vmState: x86_64
+          vm_name: vm_libvirt0_1
+        uuid: c12f117e-f38a-4722-8e78-5d8524b239d2
+      - properties:
+          vmState: x86_64
+          vm_name: vm_libvirt0_2
+        uuid: 7ecf5159-7d7d-4e86-a8e9-b5916ad72a8e
+      - properties:
+          vmState: x86_64
+          vm_name: vm_libvirt0_3
+        uuid: 5a6ff93c-1ef7-49f6-99f0-22adc0b1588e
+  valid: true
 
-[vcenter1]
-esx1.dc1-vcenter.example.com:
-  capabilities:
-    cpu_topology:
-      arch: x86_64
-      cores: 12
-      sockets: 2
-      threads: 24
-    ram_mb: 253917
-    type: vmware
-  id: '''vim.HostSystem:host-15'''
-  name: esx1.dc1-vcenter.example.com
-  vms:
-    some-workload-vm-1:
-      uuid: 422270db-f382-4955-8cbd-75736a64089b
-      vmState: running
-      vmware_uuid: 422270db-f382-4955-8cbd-75736a64089b
-    another-workload-vm-2:
-      uuid: 4222dec1-6226-4f44-95e4-05156ea0f4b5
-      vmState: running
-      vmware_uuid: 4222dec1-6226-4f44-95e4-05156ea0f4b5
-esx2.dc1-vcenter.example.com:
-  capabilities:
-    cpu_topology:
-      arch: x86_64
-      cores: 12
-      sockets: 2
-      threads: 24
-    ram_mb: 262109
-    type: vmware
-  id: '''vim.HostSystem:host-27'''
-  name: esx2.dc1-vcenter.example.com
-  vms:
-    another-workload-vm-1:
-      uuid: 42225602-4139-44fb-b111-e5b8df028b1c
-      vmState: running
-      vmware_uuid: 42225602-4139-44fb-b111-e5b8df028b1c
-    linux-workload-vm-3:
-      uuid: 5dec2242-969f-1dee-8137-209da409ec2b
-      vmState: running
-      vmware_uuid: 4222ec5d-9f96-ee1d-8137-209da409ec2b
-    linux-workload-vm-1:
-      uuid: 564d2049-beb3-8f38-bfea-488d2a4186cd
-      vmState: running
-      vmware_uuid: 564d2049-beb3-8f38-bfea-488d2a4186cd
-    linux-workload-vm-2:
-      uuid: 7e0f2242-f1c3-dd4a-b902-18f602165074
-      vmState: running
-      vmware_uuid: 42220f7e-c3f1-4add-b902-18f602165074
+- backend: vcenter0
+  details:
+    virtualization_hosts:
+    - group_name: vcenter0
+      identifier: '''vim.HostSystem:host-0'''
+      properties:
+        arch: x86_64
+        cores: 12
+        name: esx0.vcenter0.example.com
+        ram_mb: 262108
+        sockets: 2
+        threads: 24
+        type: vmware
+      systems:
+      - properties:
+          vmState: x86_64
+          vm_name: vm_vcenter0_0_0
+          vmware_uuid: c675afea-75db-984b-82cf-fa57b384cfd9
+        uuid: eaaf75c6-db75-4b98-82cf-fa57b384cfd9
+      - properties:
+          vmState: x86_64
+          vm_name: vm_vcenter0_0_1
+          vmware_uuid: a932fe0e-5d69-e544-9706-d3db67f834fe
+        uuid: 0efe32a9-695d-44e5-9706-d3db67f834fe
+      - properties:
+          vmState: x86_64
+          vm_name: vm_vcenter0_0_2
+          vmware_uuid: 221e4ab5-1ab5-f248-bf2e-02c6266336e4
+        uuid: b54a1e22-b51a-48f2-bf2e-02c6266336e4
+      - properties:
+          vmState: x86_64
+          vm_name: vm_vcenter0_0_3
+          vmware_uuid: 26399028-5f3a-9f4c-803a-0353c99eb805
+        uuid: 28903926-3a5f-4c9f-803a-0353c99eb805
+    - group_name: vcenter0
+      identifier: '''vim.HostSystem:host-1'''
+      properties:
+        arch: x86_64
+        cores: 12
+        name: esx1.vcenter0.example.com
+        ram_mb: 262108
+        sockets: 2
+        threads: 24
+        type: vmware
+      systems:
+      - properties:
+          vmState: x86_64
+          vm_name: vm_vcenter0_1_0
+          vmware_uuid: 1283147e-b217-1947-b35c-b5eb7676826b
+        uuid: 7e148312-17b2-4719-b35c-b5eb7676826b
+      - properties:
+          vmState: x86_64
+          vm_name: vm_vcenter0_1_1
+          vmware_uuid: ed340382-28a9-a449-85a0-df6ade7828d9
+        uuid: 820334ed-a928-49a4-85a0-df6ade7828d9
+      - properties:
+          vmState: x86_64
+          vm_name: vm_vcenter0_1_2
+          vmware_uuid: 4da580e7-fd16-6545-8409-ec1adbd03f26
+        uuid: e780a54d-16fd-4565-8409-ec1adbd03f26
+      - properties:
+          vmState: x86_64
+          vm_name: vm_vcenter0_1_3
+          vmware_uuid: 5ccd2fd8-933f-4945-80a5-aaec26f6300a
+        uuid: d82fcd5c-3f93-4549-80a5-aaec26f6300a
+  valid: true
 ```
+
 
 # OPTIONS
 
-  **-c**, **--config <CONFIG_FILE>**
+  **-c**, **--config** **<CONFIG_FILE>**
   : Specifies a file containing YAML configuration settings. If both
     **--config** and **-config-dir** options are specified, the
     specified **--config** file contents will be merged over the
     settings loaded from the **-config-dir** directory, superceding
     any existing settings.
 
-  **--config-dir**, **--config_dir <CONFIG_DIR>**
+  **--config-dir**, **--config_dir** **<CONFIG_DIR>**
   : Specifies a directory containing one of more YAML configuration
     files, with **.yaml** or **.yml** suffixes that will be merged
     together, in lexical sort order, to construct the configuration
@@ -168,6 +195,10 @@ esx2.dc1-vcenter.example.com:
   **-C**, **--check**
   : Checks the specified configuration settings for correctness, reporting
     any issues found.
+
+  **--scc-credentials-check**
+  : Validate that the supplied SCC credentials can be used to successfully
+    connect to the SUSE Customer Center.
 
   **-h**, **--help**
   : Provides basic details about the available command line options.
@@ -181,9 +212,26 @@ esx2.dc1-vcenter.example.com:
   **-V**, **--version**
   : Reports the version of **scc-hypervisor-collector**.
 
-  **-L**, **--logfile <LOG_FILE>**
+  **-L**, **--logfile** **<LOG_FILE>**
   : Specifies the path to the log file in which to write log messages.
     Defaults to **~/scc-hypervisor-collector.log**.
+
+  **-r**, **--retry-on-rate-limit**, **--retry_on_rate_limit**
+  : Enable retrying of data upload to the SCC if rate limiting is
+    encountered.
+
+  **-u**, **--upload**
+  : Upload the data collected to the SCC.
+
+  **-o**, **--output** **OUTPUT**
+  : Store collected data in specified file rather than uploading it.
+    Mutually exclusive with **--input**.
+
+  **-i**, **--input** **INPUT**
+  : Load collected data from specified file rather than retrieving
+    from hypervisors that may be configured. Mutually exclusive
+    with **--output**.
+
 
 # SECURITY CONSIDERATIONS
 
@@ -231,13 +279,42 @@ See **ssh-keygen(1)** for more details on how to generate appropriate
 SSH keys if needed, and **ssh(1)** for the appropriate permissions
 for the **~/.ssh/** directory and any keys stored there.
 
+## INPUT & OUTPUT FILES
+
+The input files, like the configuration settings, must be owned by the
+non-root user, with permissions that permit only that user to access
+it, that is running the command. Similarly, the output file will be
+created with the same restrictive permissions and ownership.
+
+## COLLECT ON ONE SYSTEM, UPLOAD ON ANOTHER
+
+Collecting the hypervisor details and uploading them to the SCC
+in a single command run may not always be possible. For example,
+in some customer environments, systems with the necessary access
+to collect hypervisor details may not have the internet access
+required to upload the collected details to the SCC.
+
+The **--input** and **--output** options are intended to support
+such deployment models, as follows:
+
+* on an internal system, with access to the hypervisors, the
+  **scc-hypervisor-collector** can be run using the **--output**
+  option to create a hypervisor details file.
+
+* the hypervisor details file can be copied to a system with
+  internet access, which just needs the SCC credentials to be
+  configured, where the **scc-hypervisor-collector** can be
+  run, using the **input** option to specify the hypervisor
+  details file, to upload the hypervisor details to the SCC.
+
+
 # CONFIGURATION SETTINGS
 
 Configuration settings are specified in YAML format and must contain:
 
 **backends**
 : a list of hypervisor backends from which to retrieve relevant
-  details
+  details. NOTE: Not required with **--input** is specified.
 
 **credentials**
 : a collection of credentials that will be used to upload the
@@ -297,6 +374,7 @@ Each hypervisor type has specific configuration settings that must
 be provided to permit the relevant details to be retrieved; these
 settings are documented in **scc-hypervisor-collector(5)**.
 
+
 # EXIT CODES
 
 **scc-hypervisor-collector** sets the following exit codes:
@@ -319,11 +397,13 @@ JSON API over HTTP using TLS encryption.
 The **gatherer** Python module provided by the **virtual-host-gatherer(1)**
 command is used to retrieve the details from the configured hypervisors.
 
+
 # ENVIRONMENT
 
 **scc-hypervisor-collector(1)** respects the HTTP_PROXY environment
 variable.  See https://www.suse.com/support/kb/doc/?id=000017441 for
 more details on how to manually configure proxy usage.
+
 
 # FILES AND DIRECTORIES
 
@@ -343,10 +423,12 @@ more details on how to manually configure proxy usage.
 : Directory holding any SSH keys (**ssh-keygen**) needed to access
   **Libvirt** with **qemu+ssh** URIs.
 
+
 # AUTHORS
 
 Originally developed by Fergal Mc Carthy (fmccarthy@suse.com) and
 Meera Belur (mbelur@suse.com) for the SCC at SUSE LLC (scc-feedback@suse.de)
+
 
 # LINKS
 
@@ -357,6 +439,7 @@ scc-hypervisor-collector on GitHub: https://github.com/SUSE/scc-hypervisor-colle
 virtual-host-gatherer on GitHub: https://github.com/uyuni-project/virtual-host-gatherer
 
 YAML Specification: https://yaml.org/
+
 
 # SEE ALSO
 
