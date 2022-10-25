@@ -13,7 +13,7 @@ jobs:
     - name: Install package dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install git
+        sudo apt-get install bumpversion
 
     - name: Checkout repo to workspace (full clone)
       uses: actions/checkout@v3
@@ -22,17 +22,14 @@ jobs:
 
     - name: Configure git
       run: |
-        git config --global user.name 'Bumpversion Bot'
-        git config --global user.email ''
+        git config --local user.name 'Version Bumping Bot'
+        git config --local user.email ''
+        git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
 
-    - name: Setup repo tools
-      run: |
-        bin/create-venv
-
-    - name: Bump patch if not already being bumped
+    - name: Bump patch if version isn't already being bumped
       if: "!contains(github.event.head_commit.message, 'Bump version')"
       run: |
-        bin/bump2version patch
+        bump2version patch
         git push
 
     - name: Create tag for bumped version
