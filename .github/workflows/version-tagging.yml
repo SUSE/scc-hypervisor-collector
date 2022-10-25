@@ -12,23 +12,34 @@ jobs:
     steps:
     - name: Install package dependencies
       run: |
-        sudo apt-get update
+        #sudo apt-get update
         sudo apt-get install bumpversion
 
     - name: Checkout repo to workspace (full clone)
       uses: actions/checkout@v3
       with:
-        persist-credentials: false
+        #persist-credentials: false
         fetch-depth: '0'
+
+    - name: Determine if version already bumped
+      id: check_if_bumped
+      run: |
+        echo Check changes vs ${{ github.ref }}
+        if git diff ${{ github.ref }} -- src/scc_hypervisor_collector/__init__.py | grep -sq "^[+]__version__"; then
+          bumped=true
+        else
+          bumped=false
+        fi
+        echo "bumped=${bumped}" >> ${GITHUB_OUTPUT}
 
     - name: Configure git
       run: |
         git config --local user.name 'Version Bumping Bot'
         git config --local user.email ''
-        git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+        #git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
 
     - name: Bump patch if version isn't already being bumped
-      if: "!contains(github.event.head_commit.message, 'Bump version')"
+      if: steps.check_if_bumped.bumped == "false"
       run: |
         bumpversion patch
         git push
