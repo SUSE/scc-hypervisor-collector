@@ -1,0 +1,45 @@
+name: scc-hypervisor-collector version tagging
+
+on:
+  pull_request:
+    types:
+      - closed
+
+jobs:
+  bumpversion_if_merged:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+    - name: Install package dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install git
+
+    - name: Checkout repo to workspace (full clone)
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: '0'
+
+    - name: Configure git
+      run: |
+        github config --global user.name 'Bumpversion Bot'
+        github config --global user.email ''
+
+    - name: Setup repo tools
+      run: |
+        bin/create-venv
+
+    - name: Bump patch if not already being bumped
+      if: "!contains(github.event.head_commit.message, 'Bump version')"
+      run: |
+        bin/bump2version patch
+        git push
+
+    - name: Create tag for bumped version
+      run: |
+        tag_prefix="f"
+        prev_version=$(git describe --tags --abbrev=0 | tr -d "${tag_prefix}")
+        new_version=$(grep -e "^__version__[[:space:]]*=[[:space:]]*" src/scc_hypervisor_collector/__init__.py | cut -d= -f2 | tr -d "[:space:]'")
+        git tag -m "Bump version: ${prev_version} → ${new_version}" ${tag_prefix}${new_version}
+        git push --tags
+
