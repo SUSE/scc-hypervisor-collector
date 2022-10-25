@@ -24,7 +24,7 @@ from .api import (
 
 
 __author = 'Fergal Mc Carthy <fmccarthy@suse.com>'
-__version__ = '0.0.12'
+__version__ = '0.0.13'
 
 __all__ = [
     'check_permissions',
