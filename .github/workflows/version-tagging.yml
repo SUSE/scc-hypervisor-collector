@@ -39,7 +39,7 @@ jobs:
         git config --local user.email ''
 
     - name: Bump patch if version isn't already being bumped
-      if: contains(steps.check_if_version_bumped_in_pr.outputs.bumped_in_pr, "false")
+      if: contains(steps.check_if_version_bumped_in_pr.outputs.bumped_in_pr, 'false')
       run: |
         bumpversion patch
         git push
