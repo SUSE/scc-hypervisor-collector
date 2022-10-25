@@ -22,8 +22,8 @@ jobs:
 
     - name: Configure git
       run: |
-        github config --global user.name 'Bumpversion Bot'
-        github config --global user.email ''
+        git config --global user.name 'Bumpversion Bot'
+        git config --global user.email ''
 
     - name: Setup repo tools
       run: |
