@@ -18,7 +18,6 @@ jobs:
     - name: Checkout repo to workspace (full clone)
       uses: actions/checkout@v3
       with:
-        #persist-credentials: false
         fetch-depth: '0'
 
     - name: Determine if version already bumped
@@ -30,14 +29,13 @@ jobs:
         else
           bumped_in_pr=false
         fi
-        echo "bumped_in_pr=${bumped}"
-        echo "bumped_in_pr=${bumped}" >> ${GITHUB_OUTPUT}
+        echo "bumped_in_pr=${bumped_in_pr}"
+        echo "bumped_in_pr=${bumped_in_pr}" >> ${GITHUB_OUTPUT}
 
     - name: Configure git
       run: |
         git config --local user.name 'Version Bumping Bot'
         git config --local user.email ''
-        #git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
 
     - name: Bump patch if version isn't already being bumped
       if: steps.check_if_version_bumped_in_pr.outputs.bumped_in_pr == false
