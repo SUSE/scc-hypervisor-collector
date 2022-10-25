@@ -24,12 +24,14 @@ jobs:
     - name: Determine if version already bumped
       id: check_if_bumped
       run: |
+        git diff ${{ github.ref }} -- src/scc_hypervisor_collector/__init__.py | grep "^[+]__version__"
         echo Check changes vs ${{ github.ref }}
         if git diff ${{ github.ref }} -- src/scc_hypervisor_collector/__init__.py | grep -sq "^[+]__version__"; then
           bumped=true
         else
           bumped=false
         fi
+        echo "bumped=${bumped}"
         echo "bumped=${bumped}" >> ${GITHUB_OUTPUT}
 
     - name: Configure git
