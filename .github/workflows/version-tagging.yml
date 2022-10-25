@@ -18,6 +18,7 @@ jobs:
     - name: Checkout repo to workspace (full clone)
       uses: actions/checkout@v3
       with:
+        persist-credentials: false
         fetch-depth: '0'
 
     - name: Configure git
@@ -30,7 +31,14 @@ jobs:
       if: "!contains(github.event.head_commit.message, 'Bump version')"
       run: |
         bumpversion patch
-        git push
+        echo git push
+
+    - name: Push bumped version if needed
+      if: "!contains(github.event.head_commit.message, 'Bump version')"
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: ${{ github.ref }}
 
     - name: Create tag for bumped version
       run: |
