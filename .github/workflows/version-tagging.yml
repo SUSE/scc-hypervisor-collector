@@ -29,6 +29,7 @@ jobs:
         else
           bumped_in_pr=false
         fi
+        bumped_in_pr=$(git diff ${{ github.ref }} -- src/scc_hypervisor_collector/__init__.py | grep -sq "^[+]__version__" && echo true || echo false)
         echo "bumped_in_pr=${bumped_in_pr}"
         echo "bumped_in_pr=${bumped_in_pr}" >> ${GITHUB_OUTPUT}
 
@@ -38,7 +39,7 @@ jobs:
         git config --local user.email ''
 
     - name: Bump patch if version isn't already being bumped
-      if: steps.check_if_version_bumped_in_pr.outputs.bumped_in_pr == false
+      if: contains(steps.check_if_version_bumped_in_pr.outputs.bumped_in_pr, "false")
       run: |
         bumpversion patch
         git push
