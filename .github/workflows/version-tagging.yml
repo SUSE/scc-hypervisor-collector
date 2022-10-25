@@ -22,17 +22,16 @@ jobs:
         fetch-depth: '0'
 
     - name: Determine if version already bumped
-      id: check_if_bumped
+      id: check_if_version_bumped_in_pr
       run: |
-        #git diff ${{ github.ref }} -- src/scc_hypervisor_collector/__init__.py | grep "^[+]__version__"
-        echo Check changes vs ${{ github.ref }}
+        echo Check if version changed relative to ${{ github.ref }}
         if git diff ${{ github.ref }} -- src/scc_hypervisor_collector/__init__.py | grep -sq "^[+]__version__"; then
-          bumped=true
+          bumped_in_pr=true
         else
-          bumped=false
+          bumped_in_pr=false
         fi
-        echo "bumped=${bumped}"
-        echo "bumped=${bumped}" >> ${GITHUB_OUTPUT}
+        echo "bumped_in_pr=${bumped}"
+        echo "bumped_in_pr=${bumped}" >> ${GITHUB_OUTPUT}
 
     - name: Configure git
       run: |
@@ -41,7 +40,7 @@ jobs:
         #git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
 
     - name: Bump patch if version isn't already being bumped
-      if: steps.check_if_bumped.outputs.bumped == false
+      if: steps.check_if_version_bumped_in_pr.outputs.bumped_in_pr == false
       run: |
         bumpversion patch
         git push
