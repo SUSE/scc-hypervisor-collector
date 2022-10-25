@@ -39,7 +39,7 @@ jobs:
         #git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
 
     - name: Bump patch if version isn't already being bumped
-      if: steps.check_if_bumped.outputs.bumped == "false"
+      if: steps.check_if_bumped.outputs.bumped == false
       run: |
         bumpversion patch
         git push
