@@ -24,13 +24,13 @@ jobs:
       id: check_if_version_bumped_in_pr
       run: |
         echo Check if version changed relative to ${{ github.ref }}
-        git diff ${{ github.ref }} -- src/scc_hypervisor_collector/__init__.py
-        if git diff ${{ github.ref }} -- src/scc_hypervisor_collector/__init__.py | grep -sq "^[+]__version__"; then
+        git log --merges -1 -p -m ${{ github.ref }}
+        if git log --merges -1 -p -m ${{ github.ref }} | grep -sq "^[+]__version__"; then
           bumped_in_pr=true
         else
           bumped_in_pr=false
         fi
-        bumped_in_pr=$(git diff ${{ github.ref }} -- src/scc_hypervisor_collector/__init__.py | grep -sq "^[+]__version__" && echo true || echo false)
+        bumped_in_pr=$(git log --merges -1 -p -m ${{ github.ref }} | grep -sq "^[+]__version__" && echo true || echo false)
         echo "bumped_in_pr=${bumped_in_pr}"
         echo "bumped_in_pr=${bumped_in_pr}" >> ${GITHUB_OUTPUT}
 
