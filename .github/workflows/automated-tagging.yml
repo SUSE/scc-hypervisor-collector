@@ -1,0 +1,59 @@
+name: scc-hypervisor-collector automated tagging
+
+on:
+  pull_request:
+    types:
+      - closed
+
+jobs:
+  bumpversion_if_needed_on_merge:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repo to workspace (full clone)
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: '0'
+
+    - name: Configure git
+      run: |
+        git config --local user.name 'Version Bumping Bot'
+        git config --local user.email 'bot@noreply.suse.com'  # Arbitrary address
+
+    - name: Check if version was changed by PR
+      id: check_version_in_pr
+      run: |
+        version_file="src/scc_hypervisor_collector/__init__.py"
+        # ensure this sed expression matches the version line in version_file
+        pr_version=$(sed -e "s/^__version__\s*=\s*'\([^']*\)'/\1/p;/^.*$/d" "${version_file}")
+        # check if version line was modified in most recent merge
+        changed=$(git log --merges -1 -p -m ${{ github.ref }} | grep -sq "^[+]__version__" && echo true || echo false)
+        echo "Version in pr: ${pr_version}"
+        echo "Version changed in pr: ${changed}"
+        # Add to outputs for this step
+        echo "pr_version=${pr_version}" >> ${GITHUB_OUTPUT}
+        echo "changed=${changed}" >> ${GITHUB_OUTPUT}
+
+    - name: Create tag for changed version if needed
+      if: steps.check_version_in_pr.outputs.changed == 'true'
+      run: |
+        tag_prefix="a"
+        # determine the most recent version tag with given tag prefix
+        prev_version=$(git tag --list "${tag_prefix}*" | sort --reverse --version-sort | head -n 1)
+        if [[ -z "${prev_version}" ]]; then
+            echo "No previous tag found, leaving blank"
+        fi
+        # new version is the version set in the pr
+        new_version=${{ steps.check_version_in_pr.outputs.pr_version }}
+        if [[ -z "${new_version}" ]]; then
+            echo "Failed to determine new version from PR!"
+            exit 1
+        fi
+        # only create tag for version if it doesn't already exist;
+        # PR may just have changed whitespace or comment on version line
+        if [[ "${prev_version}" != "${new_version}" ]]; then
+            # Create a tag for the new version
+            git tag -m "Bump version: ${prev_version:-unknown} → ${new_version}" "${tag_prefix}${new_version}"
+            git push --tags
+        fi
+
