@@ -1,0 +1,57 @@
+name: scc-hypervisor-collector automated version tagging
+
+on:
+  pull_request:
+    types:
+      - closed
+
+jobs:
+  bumpversion_if_needed_on_merge:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+    - name: Install package dependencies
+      run: |
+        #sudo apt-get update  # adds 10-30 seconds to run time
+        sudo apt-get install bumpversion
+
+    - name: Checkout repo to workspace (full clone)
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: '0'
+
+    - name: Determine if version already bumped
+      id: check_if_version_bumped_in_pr
+      run: |
+        # checking against most recent merge, which should be the merge
+        # we were triggered for
+        echo "Check if version was changed as part of most recent merge to ${{ github.ref }}"
+        bumped_in_pr=$(git log --merges -1 -p -m ${{ github.ref }} | grep -sq "^[+]__version__" && echo true || echo false)
+        echo "Version was bumped in pr: ${bumped_in_pr}"
+        # Add to outputs for this step
+        echo "bumped_in_pr=${bumped_in_pr}" >> ${GITHUB_OUTPUT}
+
+    - name: Configure git
+      run: |
+        git config --local user.name 'Version Bumping Bot'
+        git config --local user.email 'bot@noreply.suse.com'  # Arbitrary address
+
+    - name: Bump version patch level if version isn't already being bumped
+      if: steps.check_if_version_bumped_in_pr.outputs.bumped_in_pr == 'false'
+      run: |
+        bumpversion patch
+        git push
+
+    - name: Create tag for bumped version
+      run: |
+        tag_prefix="v"
+        version_file="src/scc_hypervisor_collector/__init__.py"
+        # determine the most recent tag and strip tag prefix from the front of it
+        prev_version=$(git describe --tags --abbrev=0 | sed -e "s/^${tag_prefix}//")
+        # extract latest version (from PR, or bumpversion) in tree
+        new_version=$(sed -e "s/^__version__\s*=\s*'\([^']*\)'/\1/p;/^.*$/d" "${version_file}")
+        [[ -z "${prev_version}" -o -z "${new_version}" ]] && exit 1
+        # Create a tag using the same format as bumpversion
+        git tag -m "Bump version: ${prev_version} → ${new_version}" "${tag_prefix}${new_version}"
+        git push --tags
+
